@@ -13,10 +13,10 @@ class QRCode{
     {
       $this->create_map_user_table();
       $this->create_table();
-	  $this->get_data();
+	 
       add_action( 'show_user_profile', array($this,'extra_user_profile_fields') );
       add_action( 'edit_user_profile', array($this,'extra_user_profile_fields') );
-	  add_action('wp_enqueue_scripts', array($this,'callback_for_scripts_styles') );
+	  add_action('admin_init', array($this,'callback_for_scripts_styles') );
 	  
 	  add_action( 'wp_ajax_nopriv_get_data', array($this,'get_data') );
 	  add_action( 'wp_ajax_get_data', array($this,'get_data') );
@@ -169,127 +169,16 @@ $level = count((array)$data_od_level[0]);
 	  <?php
 	  foreach ($level_data as $key => $value) {
 		 ?>
- 					<td><a href="#popup1" id="button"><?php echo $value; ?></a></td>
+ 					<td><a href="#popup" class="get_user_button" data-user="<?php echo $value; ?>"><?php echo $value; ?></a></td>
 					
 					
 		 <?php
 	  }
 
 	  ?>
-	  <style>
-	  .box {
-  width: 40%;
-  margin: 0 auto;
-  background: rgba(255,255,255,0.2);
-  padding: 35px;
-  border: 2px solid #fff;
-  border-radius: 20px/50px;
-  background-clip: padding-box;
-  text-align: center;
-}
-
-.button {
-  font-size: 1em;
-  padding: 10px;
-  color: #fff;
-  border: 2px solid #06D85F;
-  border-radius: 20px/50px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease-out;
-}
-.button:hover {
-  background: #06D85F;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  transition: opacity 500ms;
-  visibility: hidden;
-  opacity: 0;
-}
-.overlay:target {
-  visibility: visible;
-  opacity: 1;
-}
-
-.popup {
-  margin: 70px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 5px;
-  width: 30%;
-  position: relative;
-  transition: all 5s ease-in-out;
-}
-
-.popup h2 {
-  margin-top: 0;
-  color: #333;
-  font-family: Tahoma, Arial, sans-serif;
-}
-.popup .close {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  transition: all 200ms;
-  font-size: 30px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #333;
-}
-.popup .close:hover {
-  color: #06D85F;
-}
-.popup .content {
-  max-height: 30%;
-  overflow: auto;
-}
-
-@media screen and (max-width: 700px){
-  .box{
-    width: 70%;
-  }
-  .popup{
-    width: 70%;
-  }
-}
-</style>
+	
       
-<div id="popup1" class="overlay">
-	<div class="popup">
-		<h2>Here i am</h2>
-		<a class="close" href="#">&times;</a>
-		<div class="content">
-			
-			<?php 
-			global $wpdb;
-			
-			$id= $_GET['value'];
-			$table_name =$wpdb->prefix.'map_user_to_user';
-	$results = $wpdb->get_results( "SELECT * FROM $table_name"); // Query to fetch data from database table and storing in $results
-if(!empty($results))                        // Checking if $results have some values or not
-{    
-         
-    foreach($results as $row){   
-    
-    echo "ID  : " . $row->id . " <br>";
-    echo "userid  : " . $row->userid . " <br>";
-    echo "upline_userid : " . $row->upline_userid . " <br>";
-    echo "fname : " . $row->fname . " <br>";
-    
-    }
-   
-}
-	?>
-		</div>
-	</div>
-</div>
+
       
      
      
@@ -297,9 +186,25 @@ if(!empty($results))                        // Checking if $results have some va
 	<?php  } ?>
   </tbody>
 </table>
-	
-	
-	
+
+<svg display="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="768" height="800" viewBox="0 0 768 800"><defs><g id="icon-close"><path class="path1" d="M31.708 25.708c-0-0-0-0-0-0l-9.708-9.708 9.708-9.708c0-0 0-0 0-0 0.105-0.105 0.18-0.227 0.229-0.357 0.133-0.356 0.057-0.771-0.229-1.057l-4.586-4.586c-0.286-0.286-0.702-0.361-1.057-0.229-0.13 0.048-0.252 0.124-0.357 0.228 0 0-0 0-0 0l-9.708 9.708-9.708-9.708c-0-0-0-0-0-0-0.105-0.104-0.227-0.18-0.357-0.228-0.356-0.133-0.771-0.057-1.057 0.229l-4.586 4.586c-0.286 0.286-0.361 0.702-0.229 1.057 0.049 0.13 0.124 0.252 0.229 0.357 0 0 0 0 0 0l9.708 9.708-9.708 9.708c-0 0-0 0-0 0-0.104 0.105-0.18 0.227-0.229 0.357-0.133 0.355-0.057 0.771 0.229 1.057l4.586 4.586c0.286 0.286 0.702 0.361 1.057 0.229 0.13-0.049 0.252-0.124 0.357-0.229 0-0 0-0 0-0l9.708-9.708 9.708 9.708c0 0 0 0 0 0 0.105 0.105 0.227 0.18 0.357 0.229 0.356 0.133 0.771 0.057 1.057-0.229l4.586-4.586c0.286-0.286 0.362-0.702 0.229-1.057-0.049-0.13-0.124-0.252-0.229-0.357z"></path></g></defs></svg>
+<div class="modal">
+    <div class="modal-overlay modal-toggle"></div>
+    <div class="modal-wrapper modal-transition">
+      <div class="modal-header">
+      
+        <h2 class="modal-heading">User details</h2>
+        <button class="modal-close modal-toggle"><svg class="icon-close icon" viewBox="0 0 32 32"><use xlink:href="#icon-close"></use></svg></button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="modal-content">
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit eum delectus, libero, accusantium dolores inventore obcaecati placeat cum sapiente vel laboriosam similique totam id ducimus aperiam, ratione fuga blanditiis maiores.</p>
+        
+        </div>
+      </div>
+    </div>
+  </div>
 	<?php
 
     
@@ -307,23 +212,19 @@ if(!empty($results))                        // Checking if $results have some va
 
 public function callback_for_scripts_styles() 
 {
-    wp_register_style( 'custom_style', plugins_url('css/custom.css',__FILE__ ) );
+    // wp_register_style( 'custom_style', plugins_url('css/custom.css',__FILE__ ) );
     wp_enqueue_style( 'custom_style' , plugins_url('css/custom.css',__FILE__ ) );
-    wp_enqueue_script( 'custom_script', plugins_url('js/custom.js', __FILE__) );
+    wp_enqueue_script( 'custom_script', plugins_url('js/custom.js', __FILE__), array('jquery'));
 	
-	wp_localize_script( 'ajax-script', 'my_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+	wp_localize_script( 'custom_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
 }
 
 public function get_data() {
 	global $wpdb;
-    $abc = '1';
-    //$result = $wpdb->get_results("SELECT * FROM ".$wpdb->options ." WHERE option_name LIKE '_transient_%'");
-    //echo  $result; //returning this value but still shows 0
-    //wp_die();
-	?>
-	
-	<?php 
-	
+    $user_id = $_POST['user_id'];
+
+	echo $user_id;
+  die();
 }
 
 public function fetch_data()
