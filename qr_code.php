@@ -15,8 +15,13 @@ Text Domain: Mechlin
 
 
 include(plugin_dir_path(__FILE__) . 'inc/class-function.php');
-QrCode::init();
 
+include(plugin_dir_path(__FILE__) . 'inc/class-qr-code.php');
+
+include(plugin_dir_path(__FILE__) . 'inc/class-woo-product.php');
+QrCode::init();
+ QRCodeDatas::init();
+WooProductData::init();
 
 
 
@@ -79,7 +84,8 @@ function qr_template(){
 	return $templates;
 }
 
-add_filter('theme_page_templates','qr_code_template',10,3);
+add_filter('theme_page_templates','qr_code_template',10,3); 
+
 function qr_code_template($page_templates,$theme,$post){
 	$templates['page-template.php'] = 'Page Template From Plugin';
 
