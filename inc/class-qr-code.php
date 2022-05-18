@@ -26,6 +26,7 @@ class QRCodeDatas{
 				`id` BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY , 
 				`active` BOOLEAN NULL DEFAULT TRUE , 
 				`userid` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
+                `map_userid` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
 				`qr_code` VARCHAR(255) UNSIGNED NULL DEFAULT NULL, 
 				`fname` VARCHAR(255) NULL DEFAULT NULL , 
 				`lname` VARCHAR(255) NULL DEFAULT NULL , 
@@ -63,6 +64,8 @@ class QRCodeDatas{
 				'updatedate'=>$data['updatedate']          
         ));
     }
+
+    
 
 
   
