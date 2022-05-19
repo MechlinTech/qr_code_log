@@ -12,6 +12,9 @@ class QRCodeDatas{
     public function __construct()
     {
       $this->qr_data_get();
+      //$this->create_qr_data();
+      //$this->update_qr_data();
+      //$this->delete_qr_data();
     }
 
     public function qr_data_get(){
@@ -26,7 +29,7 @@ class QRCodeDatas{
 				`id` BIGINT(20) NOT NULL AUTO_INCREMENT PRIMARY KEY , 
 				`active` BOOLEAN NULL DEFAULT TRUE , 
 				`userid` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-				`qr_code` VARCHAR(255) UNSIGNED NULL DEFAULT NULL, 
+				`qr_code` VARCHAR(255) NULL DEFAULT NULL, 
 				`fname` VARCHAR(255) NULL DEFAULT NULL , 
 				`lname` VARCHAR(255) NULL DEFAULT NULL , 
 				`address` VARCHAR(255) NULL DEFAULT NULL , 
@@ -47,7 +50,7 @@ class QRCodeDatas{
     public function create_qr_data($data){
         global $wpdb;
          $tablename = $wpdb->prefix.'qr_code_list';
-
+		 			
         $wpdb->insert( $tablename, array(
                 'userid'=> $data['userid'] ,
 				'qr_code'=>$data['qr_code'] , 
@@ -62,6 +65,45 @@ class QRCodeDatas{
 				'createdate'=>$data['createdate']  , 
 				'updatedate'=>$data['updatedate']          
         ));
+    }
+	
+	public function update_qr_data($data){
+        global $wpdb;
+         $tablename = $wpdb->prefix.'qr_code_list';
+		 
+		 $user_id   = $data->get_user_id();
+
+        $wpdb->update( $tablename, array(
+                'userid'=> $data['userid'] ,
+				'qr_code'=>$data['qr_code'] , 
+				'fname'=>$data['fname']  , 
+				'lname'=>$data['lname'] , 
+				'address'=>$data['address'] , 
+				'city'=>$data['city'], 
+				'state'=>$data['state'] , 
+				'zip'=>$data['zip'] , 
+				'order_id'=>$data['order_id']  , 
+                'item_id'=>$data['item_id']  , 
+				'createdate'=>$data['createdate']  , 
+				'updatedate'=>$data['updatedate']          
+        ),
+		array( 'id' => $user_id )
+		);
+    }
+	
+	public function delete_qr_data()
+	{
+        global $wpdb;
+         $tablename = $wpdb->prefix.'qr_code_list';
+
+        $user_id   = $data->get_user_id();
+
+			if (isset($_POST['delete'])) 
+			{
+					$wpdb->query('DELETE  FROM $wpdb->$tablename
+						   WHERE id = "'.$user_id.'" '	);
+
+			}
     }
 
 

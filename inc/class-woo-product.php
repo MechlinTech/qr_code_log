@@ -70,12 +70,10 @@ function qr_code_save_fields( $id, $post ){
         update_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
     }else{
         add_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
-    }
-		
+    }	
 	
- 
-}
 
+}
 
     public function add_data_for_qr_code( $order_id ) {
       
@@ -119,8 +117,8 @@ function qr_code_save_fields( $id, $post ){
 				'city'=>$data['city'], 
 				'state'=>$data['state'] , 
 				'zip'=>$data['zip'] , 
-				'order_id'=>$data['order_id']  , 
-                'item_id'=>$data['item_id']  , 
+				'order_id'=>$order_id  , 
+                'item_id'=>$item['order_item_id']  , 
 				'createdate'=>$data['createdate']  , 
 				'updatedate'=>$data['updatedate']          
                );
