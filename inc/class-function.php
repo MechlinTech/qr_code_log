@@ -153,7 +153,7 @@ $level = count((array)$data_od_level[0]);
   <thead>
     <tr>
       <th scope="col">#</th>
-	  <?php for($count=1 ;$count<= $level ;$count++){ ?>
+	  <?php for($count=0 ;$count< $level ;$count++){ ?>
       <th scope="col">Level-<?php echo $count; ?></th>
       
 <?php  } ?>
