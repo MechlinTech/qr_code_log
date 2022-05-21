@@ -153,7 +153,7 @@ $level = count((array)$data_od_level[0]);
   <thead>
     <tr>
       <th scope="col">#</th>
-	  <?php for($count=1 ;$count<= $level ;$count++){ ?>
+	  <?php for($count=0 ;$count<= $level ;$count++){ ?>
       <th scope="col">Level-<?php echo $count; ?></th>
       
 <?php  } ?>
@@ -199,7 +199,20 @@ $level = count((array)$data_od_level[0]);
       
       <div class="modal-body">
         <div class="modal-content">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit eum delectus, libero, accusantium dolores inventore obcaecati placeat cum sapiente vel laboriosam similique totam id ducimus aperiam, ratione fuga blanditiis maiores.</p>
+         <div class="code_display">
+           <div class="owned_qr_code">
+             <h5>Owned QR-Codes</h5>
+            <ul>
+
+            </ul>
+           </div>
+           <div class="downline_qr_code">
+           <h5>Downline QR-Codes</h5>
+             <ul>
+              
+            </ul>
+             </div>
+         </div>
         
         </div>
       </div>
@@ -223,8 +236,72 @@ public function get_data() {
 	global $wpdb;
     $user_id = $_POST['user_id'];
 
-	echo $user_id;
-  die();
+    
+            
+    $charset_collate = $wpdb->get_charset_collate();
+    $table_name =$wpdb->prefix.'qr_code';
+    
+    $distinct_user=$wpdb->get_results("SELECT DISTINCT `user_owner` FROM `$table_name`;");
+    
+    $temp_t1 ='';
+    $temp_t1_join ='';
+    $count =1;
+    foreach($distinct_user as $key=>$item){
+        if(count($distinct_user)!=$count ){
+            $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.', ';
+        }else{
+            $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.' ';
+        }
+    
+    if($count!=1){
+        $temp_t1_join = $temp_t1_join. "LEFT JOIN ".$table_name." AS t".$count." ON t".$count.".user_owner = t".($count-1).".user_id ";
+            
+    }
+    $count++;
+    
+    }
+     
+    
+   
+    
+    
+    $results = $wpdb->get_results("SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.user_id = '".$user_id."';");
+    $data_list = $results;
+
+
+    $temp_array=array();
+    $temp_check=array();
+    $count_x=0;
+    
+
+      foreach($data_list as $key=>$item){
+
+        $data_level = (array) $item;
+      
+        $count = 0;
+        foreach($data_level as $levelItem){
+        
+            // $qr_code = $wpdb->get_results("SELECT * FROM ".$table_name." WHERE user_id='".$levelItem."' ;");
+            $temp_array[$count_x][$count]=$levelItem;
+           if( !in_array($levelItem,$temp_check) && $user_id != $levelItem ){
+             array_push($temp_check,$levelItem);
+           }
+          $count++;
+        }
+        $count_x++;
+            
+      }
+      $array_data = implode("','",$temp_check);
+      $qr_code_down = $wpdb->get_results("SELECT * FROM ".$table_name." WHERE `user_id` IN ('".$array_data."'); ");
+      $qr_code_owner = $wpdb->get_results("SELECT * FROM ".$table_name." WHERE `user_owner` = ".$user_id."; ");
+
+
+$data_all =array('downline'=>$temp_array,'data'=>$data_list,'new'=>$temp_check,'downline'=>$qr_code_down,'owner'=>$qr_code_owner);
+
+
+
+    wp_send_json_success($data_all );
+    
 }
 
 public function fetch_data()
