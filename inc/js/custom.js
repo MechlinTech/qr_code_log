@@ -25,6 +25,8 @@ jQuery(document).ready(function(){
 	success: function (resp) {
 		console.log(resp);
 		
+		
+		
 			 }
 		}); 
 	
@@ -51,7 +53,26 @@ user_id:user_id
 success: function (data) {
 	console.log(data);
 	jQuery('.modal').toggleClass('is-visible');
-		 ;}
+	document.querySelector(".owned_qr_code ul").innerHTML ='';
+	document.querySelector(".downline_qr_code ul").innerHTML='';
+	(data.data.owner).forEach(element => {
+		const para = document.createElement("LI");
+		const node = document.createTextNode(element.qr_code);
+		para.appendChild(node);	
+		const elements = document.querySelector(".owned_qr_code ul");
+			elements.appendChild(para);
+		});
+		(data.data.downline).forEach(element => {
+			const para = document.createElement("LI");
+			const node = document.createTextNode(element.qr_code);
+			para.appendChild(node);	
+			const elements = document.querySelector(".downline_qr_code ul");
+				elements.appendChild(para);
+			});
+
+
+
+		 }
 	}); 
 }
 });
