@@ -336,11 +336,15 @@ console.log(data);
 		e.preventDefault();
 		var get_data_qr_code =document.querySelector('.input_owned_qr_code input').value;
 		var get_current_user =document.querySelector('.code_display').dataset;
+		const urlParams = new URLSearchParams(window.location.search);
+			const current_user_id = urlParams.get('user_id');
+		get_current_user['current_user_id'] = current_user_id ;
 		console.log(get_data_qr_code,get_current_user);
 		var data ={
 			action:'add_qr_code',
 			user_id:get_current_user,
-			qr_code:get_data_qr_code
+			qr_code:get_data_qr_code,
+			mode:'owner'
 		};
 		add_owned_line(data);
 	
@@ -349,13 +353,17 @@ console.log(data);
 	
 	jQuery("button.button.button-primary.add_down_data_qr_code").on('click',function(e){
 		e.preventDefault();
-		var get_data_qr_code =document.querySelector('.input_down_qr_code input').value;
+		var get_data_qr_code =document.querySelector('.input_downline_qr_code input').value;
 		var get_current_user =document.querySelector('.code_display').dataset;
+		const urlParams = new URLSearchParams(window.location.search);
+			const current_user_id = urlParams.get('user_id');
+		get_current_user['current_user_id'] = current_user_id ;
 		console.log(get_data_qr_code,get_current_user);
 		var data ={
 			action:'add_qr_code',
 			user_id:get_current_user,
-			qr_code:get_data_qr_code
+			qr_code:get_data_qr_code,
+			mode:'down'
 		};
 		add_owned_line(data);
 	
