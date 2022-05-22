@@ -20,6 +20,16 @@ class QRCode{
 	  
 	  add_action( 'wp_ajax_nopriv_get_data', array($this,'get_data') );
 	  add_action( 'wp_ajax_get_data', array($this,'get_data') );
+
+    add_action( 'wp_ajax_nopriv_update_data_line', array($this,'update_data_line') );
+	  add_action( 'wp_ajax_update_data_line', array($this,'update_data_line') );
+
+
+    add_action( 'wp_ajax_nopriv_add_qr_code', array($this,'add_qr_code') );
+	  add_action( 'wp_ajax_add_qr_code', array($this,'add_qr_code') );
+    
+
+
     }
    public function create_map_user_table()
 	{
@@ -78,9 +88,9 @@ class QRCode{
         global $wpdb;
             
         $charset_collate = $wpdb->get_charset_collate();
-        $table_name =$wpdb->prefix.'map_user_to_user';
+        $table_name =$wpdb->prefix.'qr_code';
         
-        $distinct_user=$wpdb->get_results("SELECT DISTINCT `upline_userid` FROM `$table_name`;");
+        $distinct_user=$wpdb->get_results("SELECT DISTINCT `user_owner` FROM `$table_name`;");
         //$distinct_user=$wpdb->get_results("SELECT * FROM `$table_name` WHERE upline_userid='$user_id';");
         
         // return $distinct_user;
@@ -90,13 +100,13 @@ class QRCode{
         $count =1;
         foreach($distinct_user as $key=>$item){
             if(count($distinct_user)!=$count ){
-                $temp_t1 = $temp_t1.'t'.$count.'.userid AS lev'.$count.', ';
+                $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.', ';
             }else{
-                $temp_t1 = $temp_t1.'t'.$count.'.userid AS lev'.$count.' ';
+                $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.' ';
             }
         
         if($count!=1){
-            $temp_t1_join = $temp_t1_join. "LEFT JOIN ".$table_name." AS t".$count." ON t".$count.".upline_userid = t".($count-1).".userid ";
+            $temp_t1_join = $temp_t1_join. "LEFT JOIN ".$table_name." AS t".$count." ON t".$count.".user_owner = t".($count-1).".user_id ";
                 
         }
         $count++;
@@ -107,7 +117,7 @@ class QRCode{
         // return "SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.userid = '".$user_id."';";
         
         
-        $results = $wpdb->get_results("SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.userid = '".$user_id."';");
+        $results = $wpdb->get_results("SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.user_id = '".$user_id."';");
           return $results;
         
         }
@@ -140,10 +150,6 @@ class QRCode{
 public function extra_user_profile_fields( $user ) { ?>
     <h3>Level User</h3>
 	<?php
-
-
-
-
 $data_od_level = $this->level_data($user->ID);
 if(isset($data_od_level[0])){
 $level = count((array)$data_od_level[0]);
@@ -200,20 +206,42 @@ $level = count((array)$data_od_level[0]);
       <div class="modal-body">
         <div class="modal-content">
          <div class="code_display">
+         <div class="upline_qr_code">
+             <h5>Upline QR-Codes</h5>
+            <ul>
+
+            </ul>
+            
+           </div>
            <div class="owned_qr_code">
              <h5>Owned QR-Codes</h5>
             <ul>
 
             </ul>
+            <div class="input_owned_qr_code">
+            <input type="text" max="9999999999" maxlength="10" />
+            <br/>
+            </div>
+            <button  class="button button-primary add_owner_data_qr_code">Add</button>
+            <button  class="button button-danger add_owner_data_qr_code" disabled>Delete</button>
            </div>
            <div class="downline_qr_code">
            <h5>Downline QR-Codes</h5>
              <ul>
               
             </ul>
+            <div class="input_downline_qr_code">
+            <input type="text" max="9999999999" maxlength="10" />
+            <br/>
+            </div>
+            <button  class="button button-primary add_down_data_qr_code">Add</button>
+            <button  class="button button-danger add_down_data_qr_code" disabled>Delete</button>
              </div>
+             
          </div>
-        
+         
+         
+
         </div>
       </div>
     </div>
@@ -225,11 +253,17 @@ $level = count((array)$data_od_level[0]);
 
 public function callback_for_scripts_styles() 
 {
+  global $wpdb;
     // wp_register_style( 'custom_style', plugins_url('css/custom.css',__FILE__ ) );
     wp_enqueue_style( 'custom_style' , plugins_url('css/custom.css',__FILE__ ) );
     wp_enqueue_script( 'custom_script', plugins_url('js/custom.js', __FILE__), array('jquery'));
-	
-	wp_localize_script( 'custom_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
+    $sql_user = "SELECT * FROM `".$wpdb->prefix."users`";
+    $result_users = $wpdb->get_results($sql_user);
+
+    $sql_qr= "SELECT * FROM `".$wpdb->prefix."qr_code` WHERE `user_owner` IS NULL AND `user_id` IS NULL;";
+    $result_qr_list = $wpdb->get_results($sql_qr);
+
+	wp_localize_script( 'custom_script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ),'user_list'=>$result_users ,'qr_list'=>$result_qr_list) );
 }
 
 public function get_data() {
@@ -249,8 +283,8 @@ public function get_data() {
     foreach($distinct_user as $key=>$item){
         if(count($distinct_user)!=$count ){
             $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.', ';
-        }else{
-            $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.' ';
+        }else{ 
+                    $temp_t1 = $temp_t1.'t'.$count.'.user_id AS lev'.$count.' ';
         }
     
     if($count!=1){
@@ -260,11 +294,6 @@ public function get_data() {
     $count++;
     
     }
-     
-    
-   
-    
-    
     $results = $wpdb->get_results("SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.user_id = '".$user_id."';");
     $data_list = $results;
 
@@ -294,15 +323,69 @@ public function get_data() {
       $array_data = implode("','",$temp_check);
       $qr_code_down = $wpdb->get_results("SELECT * FROM ".$table_name." WHERE `user_id` IN ('".$array_data."'); ");
       $qr_code_owner = $wpdb->get_results("SELECT * FROM ".$table_name." WHERE `user_owner` = ".$user_id."; ");
+      $qr_code_upline = $wpdb->get_row("SELECT * FROM ".$table_name." WHERE `user_id` = ".$user_id."; ");
 
 
-$data_all =array('downline'=>$temp_array,'data'=>$data_list,'new'=>$temp_check,'downline'=>$qr_code_down,'owner'=>$qr_code_owner);
+$data_all =array('downline'=>$temp_array,'data'=>$data_list,'new'=>$temp_check,'downline'=>$qr_code_down,'owner'=>$qr_code_owner,'upline'=>$qr_code_upline);
 
 
 
-    wp_send_json_success($data_all );
+    wp_send_json_success($data_all);
     
 }
+
+
+public function update_data_line(){
+	global $wpdb;
+    $data_id = $_POST['data_user'];
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $table_name =$wpdb->prefix.'qr_code';
+
+  
+    foreach ($data_id as $key => $value) {
+      $id = $value['id'];
+      $dbData = "UPDATE `".$table_name."` SET `user_owner` = NULL WHERE `".$table_name."`.`id` = ".$id.";";
+   
+
+     $wpdb->query($dbData);
+    
+     
+      }
+    
+  
+    
+
+    wp_send_json_success(array("data_all",$data_id[0]['id']));
+}
+
+public function add_qr_code(){
+  global $wpdb;
+  $user_id =$_POST['user_id'];
+    $data_id = $user_id['user_id'];
+    $qr_code  = $_POST['qr_code'];
+    $charset_collate = $wpdb->get_charset_collate();
+    
+    $table_name =$wpdb->prefix.'qr_code';
+
+    $sql = "SELECT * FROM `$table_name` WHERE qr_code= $qr_code";
+    $results_card = $wpdb->get_row($sql);
+    if(isset($results_card)){
+      wp_send_json_success(array("data_all",'$results_card'));
+    }else{
+      $date=date_create()->format('Y-m-d H:i:s');
+      $sqldata="INSERT INTO `$table_name` 
+      (`id`, `qr_code`, `product_type`, `card_type`, `createdate`, `updatedate`, `user_owner`, `user_id`)
+       VALUES 
+       NULL, '$qr_code', '1', '1', '$date', '$date', '$data_id', NULL);";
+     $data =  $wpdb->query($sqldata);
+    }
+
+
+    wp_send_json_success(array("data_all",$data));
+
+}
+
 
 public function fetch_data()
 { ?>

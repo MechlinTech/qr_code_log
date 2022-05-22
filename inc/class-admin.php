@@ -14,6 +14,12 @@ class QRCodeAdminMenu{
         add_action( 'admin_menu', array($this,'admin_menu_for_qr_code' ));
         add_action( 'wp_ajax_nopriv_update_qr_code_generation', array($this,'update_qr_code_generation') );
 	  add_action( 'wp_ajax_update_qr_code_generation', array($this,'update_qr_code_generation') );
+
+      add_action( 'wp_ajax_nopriv_update_user_line', array($this,'update_user_line') );
+	  add_action( 'wp_ajax_update_user_line', array($this,'update_user_line') );
+      
+
+      
     }
     public function update_qr_code_generation() {
         global $wpdb;
@@ -27,6 +33,26 @@ class QRCodeAdminMenu{
 
         $data = $wpdb->update($table_name , $dbData, array('id' => $id));
         echo $data;
+      die();
+    }
+
+
+
+
+
+
+    public function update_user_line() {
+        global $wpdb;
+        $user_id = $_POST['user_id'];
+        $selected_owner =$_POST['selectesUser'];
+        $id =$_POST['id'];
+        $table_name =$wpdb->prefix.'qr_code';
+
+        $dbData = array('user_owner'=>$selected_owner,'updatedate'=>time());
+       
+
+        $data = $wpdb->update($table_name , $dbData, array('id' => $id));
+        wp_send_json_success($data);
       die();
     }
 
