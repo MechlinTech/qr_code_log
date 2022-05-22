@@ -76,7 +76,7 @@
  .modal {
   position: fixed;
   z-index: 10000;
-  top: 30%;
+  top: 6%;
      left: 0;
      visibility: hidden;
      width: 100%;
@@ -109,10 +109,10 @@
  .modal-wrapper {
    position: absolute;
    z-index: 9999;
-   top: 6em;
-   left: 50%;
-   width: 32em;
-   margin-left: -16em;
+   top: 0em;
+   left: 10%;
+   width: 80%;
+   margin-left: 0;
    background-color: #fff;
    box-shadow: 0 0 1.5em hsla(0, 0%, 0%, 0.35);
  }
@@ -180,4 +180,9 @@
 }
 .code_display div {
   width: 50%;
+}
+
+.modal-body {
+  overflow-y: scroll;
+  height: 80vh;
 }

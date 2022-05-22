@@ -29,55 +29,6 @@ QRCodeAdminMenu::init();
 
 
 
-/*
-
-Example we have to achieve
-
-
-	+-------------+----------------------+--------+
-| category_id | name                 | parent |
-+-------------+----------------------+--------+
-|           1 | ELECTRONICS          |   NULL |
-|           2 | TELEVISIONS          |      1 |
-|           3 | TUBE                 |      2 |
-|           4 | LCD                  |      2 |
-|           5 | PLASMA               |      2 |
-|           6 | PORTABLE ELECTRONICS |      1 |
-|           7 | MP3 PLAYERS          |      6 |
-|           8 | FLASH                |      7 |
-|           9 | CD PLAYERS           |      6 |
-|          10 | 2 WAY RADIOS         |      6 |
-+-------------+----------------------+--------+
-
-
-
-+-------------+----------------------+--------------+-------+
-| lev1        | lev2                 | lev3         | lev4  |
-+-------------+----------------------+--------------+-------+
-| ELECTRONICS | TELEVISIONS          | TUBE         | NULL  |
-| ELECTRONICS | TELEVISIONS          | LCD          | NULL  |
-| ELECTRONICS | TELEVISIONS          | PLASMA       | NULL  |
-| ELECTRONICS | PORTABLE ELECTRONICS | MP3 PLAYERS  | FLASH |
-| ELECTRONICS | PORTABLE ELECTRONICS | CD PLAYERS   | NULL  |
-| ELECTRONICS | PORTABLE ELECTRONICS | 2 WAY RADIOS | NULL  |
-+-------------+----------------------+--------------+-------+
-
-
-
-// select * from wp_map where user_id=$user_id AND Active = true
-// select * from wp_map where upline_userid=$user_id AND Active = true
-// 	SELECT t1.name AS lev1, t2.name as lev2, t3.name as lev3, t4.name as lev4
-// FROM category AS t1
-// LEFT JOIN category AS t2 ON t2.parent = t1.category_id
-// LEFT JOIN category AS t3 ON t3.parent = t2.category_id
-// LEFT JOIN category AS t4 ON t4.parent = t3.category_id
-// WHERE t1.name = 'ELECTRONICS';
-
-*/
-
-
-
-
 
 
 
