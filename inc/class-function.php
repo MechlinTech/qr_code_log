@@ -99,13 +99,13 @@ class QRCode
     $count = 1;
     foreach ($distinct_user as $key => $item) {
       if (count($distinct_user) != $count) {
-        $temp_t1 = $temp_t1 . 't' . $count . '.user_id AS lev' . $count . ', ';
+        $temp_t1 = $temp_t1 . 't' . $count . '.user_upline AS lev' . $count . ', ';
       } else {
-        $temp_t1 = $temp_t1 . 't' . $count . '.user_id AS lev' . $count . ' ';
+        $temp_t1 = $temp_t1 . 't' . $count . '.user_upline AS lev' . $count . ' ';
       }
 
       if ($count != 1) {
-        $temp_t1_join = $temp_t1_join . "LEFT JOIN " . $table_name . " AS t" . $count . " ON t" . $count . ".user_owner = t" . ($count - 1) . ".user_id ";
+        $temp_t1_join = $temp_t1_join . "LEFT JOIN " . $table_name . " AS t" . $count . " ON t" . $count . ".user_owner = t" . ($count - 1) . ".user_upline ";
       }
       $count++;
     }
@@ -114,7 +114,7 @@ class QRCode
     // return "SELECT ".$temp_t1." FROM ".$table_name." AS t1 ".$temp_t1_join." WHERE t1.userid = '".$user_id."';";
 
 
-    $results = $wpdb->get_results("SELECT " . $temp_t1 . " FROM " . $table_name . " AS t1 " . $temp_t1_join . " WHERE t1.user_id = '" . $user_id . "';");
+    $results = $wpdb->get_results("SELECT " . $temp_t1 . " FROM " . $table_name . " AS t1 " . $temp_t1_join . " WHERE t1.user_upline = '" . $user_id . "';");
     return $results;
   }
 
@@ -264,7 +264,7 @@ class QRCode
     $sql_user = "SELECT * FROM `" . $wpdb->prefix . "users`";
     $result_users = $wpdb->get_results($sql_user);
 
-    $sql_qr = "SELECT * FROM `" . $wpdb->prefix . "qr_code` WHERE `user_owner` IS NULL AND `user_id` IS NULL;";
+    $sql_qr = "SELECT * FROM `" . $wpdb->prefix . "qr_code` WHERE `user_owner` IS NULL AND `user_upline` IS NULL;";
     $result_qr_list = $wpdb->get_results($sql_qr);
 
     wp_localize_script('custom_script', 'ajax_object', array('ajax_url' => admin_url('admin-ajax.php'), 'user_list' => $result_users, 'qr_list' => $result_qr_list));
@@ -287,17 +287,17 @@ class QRCode
     $count = 1;
     foreach ($distinct_user as $key => $item) {
       if (count($distinct_user) != $count) {
-        $temp_t1 = $temp_t1 . 't' . $count . '.user_id AS lev' . $count . ', ';
+        $temp_t1 = $temp_t1 . 't' . $count . '.user_upline AS lev' . $count . ', ';
       } else {
-        $temp_t1 = $temp_t1 . 't' . $count . '.user_id AS lev' . $count . ' ';
+        $temp_t1 = $temp_t1 . 't' . $count . '.user_upline AS lev' . $count . ' ';
       }
 
       if ($count != 1) {
-        $temp_t1_join = $temp_t1_join . "LEFT JOIN " . $table_name . " AS t" . $count . " ON t" . $count . ".user_owner = t" . ($count - 1) . ".user_id ";
+        $temp_t1_join = $temp_t1_join . "LEFT JOIN " . $table_name . " AS t" . $count . " ON t" . $count . ".user_owner = t" . ($count - 1) . ".user_upline ";
       }
       $count++;
     }
-    $results = $wpdb->get_results("SELECT " . $temp_t1 . " FROM " . $table_name . " AS t1 " . $temp_t1_join . " WHERE t1.user_id = '" . $user_id . "';");
+    $results = $wpdb->get_results("SELECT " . $temp_t1 . " FROM " . $table_name . " AS t1 " . $temp_t1_join . " WHERE t1.user_upline = '" . $user_id . "';");
     $data_list = $results;
 
 
@@ -323,9 +323,10 @@ class QRCode
       $count_x++;
     }
     $array_data = implode("','", $temp_check);
-    $qr_code_down = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE `user_id` IN ('" . $array_data . "'); ");
+    $qr_code_down = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE `user_upline` IN ('" . $array_data . "') OR (`user_upline` IS NULL AND  `user_owner` IS NOT NULL); ");
+   // $qr_code_down = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE `user_id` IN ('" . $array_data . "');");
     $qr_code_owner = $wpdb->get_results("SELECT * FROM " . $table_name . " WHERE `user_owner` = " . $user_id . "; ");
-    $qr_code_upline = $wpdb->get_row("SELECT * FROM " . $table_name . " WHERE `user_id` = " . $user_id . "; ");
+    $qr_code_upline = $wpdb->get_row("SELECT * FROM " . $table_name . " WHERE `user_upline` = " . $user_id . "; ");
 
 
     $data_all = array('downline' => $temp_array, 'data' => $data_list, 'new' => $temp_check, 'downline' => $qr_code_down, 'owner' => $qr_code_owner, 'upline' => $qr_code_upline);
@@ -379,10 +380,10 @@ class QRCode
       $date = date_create()->format('Y-m-d H:i:s');
       if($_POST['mode']=='owner'){
         
-      $sqldata = "INSERT INTO `$table_name` (`id`, `qr_code`, `product_type`, `card_type`, `createdate`, `updatedate`, `user_owner`, `user_id`) VALUES (NULL, '$qr_code', '1', '1', '$date', '$date', '$data_id', NULL);";
+      $sqldata = "INSERT INTO `$table_name` (`id`, `qr_code`, `product_type`, `card_type`, `createdate`, `updatedate`, `user_owner`, `user_upline`) VALUES (NULL, '$qr_code', '1', '1', '$date', '$date', '$data_id', NULL);";
       $data =  $wpdb->query($sqldata);
       }else{
-        $sqldata = "INSERT INTO `$table_name` (`id`, `qr_code`, `product_type`, `card_type`, `createdate`, `updatedate`, `user_owner`, `user_id`) VALUES (NULL, '$qr_code', '1', '1', '$date', '$date', '$data_id', '$current_user');";
+        $sqldata = "INSERT INTO `$table_name` (`id`, `qr_code`, `product_type`, `card_type`, `createdate`, `updatedate`, `user_owner`, `user_upline`) VALUES (NULL, '$qr_code', '1', '1', '$date', '$date', '$data_id', NULL);";
         $data =  $wpdb->query($sqldata); 
       }
      

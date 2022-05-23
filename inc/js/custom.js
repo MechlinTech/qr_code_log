@@ -63,8 +63,8 @@ success: function (data) {
 	var count =0;
 	(data.data.owner).forEach(element => {
 		const para = document.createElement("LI");
-		para.innerHTML=`<div data-user_id="${element.user_id}"  data-id="${element.id}" data-user_owner="${element.user_owner}">
-		<input type="checkbox" data-user_id="${element.user_id}"  data-id="${element.id}" data-user_owner="${element.user_owner}"/>
+		para.innerHTML=`<div data-user_id="${element.user_upline}"  data-id="${element.id}" data-user_owner="${element.user_owner}">
+		<input type="checkbox" data-user_id="${element.user_upline}"  data-id="${element.id}" data-user_owner="${element.user_owner}"/>
 		<label>${element.qr_code}</label>
 		</div>`;
 			const elements = document.querySelector(".owned_qr_code ul");
@@ -75,8 +75,8 @@ success: function (data) {
 		(data.data.downline).forEach(element => {
 			const para = document.createElement("LI");
 		
-			para.innerHTML=`<div data-user_id="${element.user_id}" data-id="${element.id}" data-user_owner="${element.user_owner}">
-			 <input type="checkbox" data-user_id="${element.user_id}"  data-id="${element.id}" data-user_owner="${element.user_owner}"/>
+			para.innerHTML=`<div data-user_id="${element.user_upline}" data-id="${element.id}" data-user_owner="${element.user_owner}">
+			 <input type="checkbox" data-user_id="${element.user_upline}"  data-id="${element.id}" data-user_owner="${element.user_owner}"/>
 			<label>${element.qr_code}</label></div>`;
 			const elements = document.querySelector(".downline_qr_code ul");
 				elements.appendChild(para);});
@@ -84,7 +84,7 @@ success: function (data) {
 			
 			const elements = document.querySelector(".upline_qr_code ul");
 			const para = document.createElement("LI");
-			para.innerHTML=`<div data-user_id="${data.data.upline.user_id}" data-mode="upline" data-id="${data.data.upline.id}"  data-user_owner="${data.data.upline.user_owner}"></div>`;
+			para.innerHTML=`<div data-user_id="${data.data.upline.user_upline}" data-mode="upline" data-id="${data.data.upline.id}"  data-user_owner="${data.data.upline.user_owner}"></div>`;
 			elements.appendChild(para);
 			 create_user_list(document.querySelector(".upline_qr_code ul div"),data.data.upline.user_owner);
 

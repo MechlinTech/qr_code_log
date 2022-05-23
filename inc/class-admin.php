@@ -28,7 +28,7 @@ class QRCodeAdminMenu{
         $id =$_POST['id'];
         $table_name =$wpdb->prefix.'qr_code';
 
-        $dbData = array('user_id'=>$user_id,'user_owner'=>$user_owner,'updatedate'=>time());
+        $dbData = array('user_upline'=>$user_id,'user_owner'=>$user_owner,'updatedate'=>time());
        
 
         $data = $wpdb->update($table_name , $dbData, array('id' => $id));
