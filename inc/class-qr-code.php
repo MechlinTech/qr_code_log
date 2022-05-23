@@ -150,16 +150,16 @@ public function qr_code(){
 //Add column if not present.
 				if(!isset($getColumn->user_owner)){
 				$wpdb->query("ALTER TABLE $table_name ADD `user_owner` BIGINT(20) UNSIGNED NULL DEFAULT NULL,
-				ADD`user_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL ,
+				ADD`user_upline` BIGINT(20) UNSIGNED NULL DEFAULT NULL ,
 				ADD KEY `".$table_name."_user_owner_foreign` (`user_owner`),
-				ADD KEY `".$table_name."_user_id_foreign` (`user_id`),
+				ADD KEY `".$table_name."_user_upline_foreign` (`user_upline`),
 
 				ADD CONSTRAINT `".$table_name."_user_owner_foreign` 
 				FOREIGN KEY (user_owner) 
 				REFERENCES ".$wpdb->prefix."users(ID) ON DELETE RESTRICT ON UPDATE RESTRICT,
 
-				ADD CONSTRAINT `".$table_name."_user_id_foreign` 
-				FOREIGN KEY (user_id) 
+				ADD CONSTRAINT `".$table_name."_user_upline_foreign` 
+				FOREIGN KEY (user_upline) 
 				REFERENCES ".$wpdb->prefix."users(ID) ON DELETE RESTRICT ON UPDATE RESTRICT
 				 ");
 				}
