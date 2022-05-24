@@ -188,11 +188,11 @@ public function admin_menu_for_qr_code() {
       <th>QR Code</th>
       <th>Product Type</th>
       <th>Card Type</th>
-      <th>User ID</th>
+      <th>User Upline</th>
         <th>User Owner</th>
       <th>Create Date</th>
       <th>Update Date</th>
-      <th>Action</th>
+  
     </tr>
     </thead>
     <tbody>
@@ -229,9 +229,8 @@ public function admin_menu_for_qr_code() {
  $result_users = $wpdb->get_results($sql_user);
  
  foreach($results as $key=>$item){
-    // t
-    // LEFT JOIN ".$wpdb->prefix."product_type p ON p.id  = t.product_type
-    //  LEFT JOIN ".$wpdb->prefix."card_type c ON c.id = t.card_type 
+   
+  
     $table_product =$wpdb->prefix.'product_type';
 
     $table_card =$wpdb->prefix.'card_type';
@@ -253,31 +252,25 @@ public function admin_menu_for_qr_code() {
         <th><?php echo $results_card->card_type;  ?></th>
         
         <th>
-        <select name="user_id" class="user_id_qr" value='0'>
-            <option value="NULL"> Select User </option>
+         
             <?php
                 foreach ($result_users as $key => $value) {
-                    if($item->user_id==$value->ID){
-                        echo '<option value="'.$value->ID.'" selected>'.$value->user_login.'</option>';
-                    }else{
-                        echo '<option value="'.$value->ID.'">'.$value->user_login.'</option>';
+                    if($item->user_upline==$value->ID){
+                        echo $value->user_login;
                     }
                   
                 }
 
             ?>
-        </select>    
+      
        </th>
         <th>
     
-        <select name="user_owner" class="user_owner_qr" value='0'>
-            <option value="NULL"> Select User </option>
+       
             <?php
                 foreach ($result_users as $key => $value) {
                     if($item->user_owner==$value->ID){
-                        echo '<option value="'.$value->ID.'" selected>'.$value->user_login.'</option>';
-                    }else{
-                        echo '<option value="'.$value->ID.'">'.$value->user_login.'</option>';
+                      echo $value->user_login;
                     }
                   
                 }
@@ -286,7 +279,7 @@ public function admin_menu_for_qr_code() {
         </select>    </th>
         <th><?php echo $item->updatedate;  ?></th>
         <th><?php echo $item->createdate;  ?></th>
-        <th><a data-id="<?php echo $item->id;  ?>" href="#" class='button button-primary get_data_qr_code'> update</a></th>
+     
        </tr>
    <?php
     }

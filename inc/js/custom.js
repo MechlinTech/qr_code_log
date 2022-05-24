@@ -409,19 +409,19 @@ jQuery(document).on('click', '.extra-fields-type', function(e) {
 	e.preventDefault();
 	var data = jQuery(this).parent('.remove')[0].dataset.map_id;
 	jQuery(this).parent('.remove').remove();
-	var removeData = document.querySelector('#tidny_trump_card button.update-type-product').dataset.remove_id;
+	var removeData = document.querySelector('#card_setting button.update-type-product').dataset.remove_id;
 	removeData =JSON.parse(removeData);
 	removeData.push(data);
 	console.log(removeData,data);
-	document.querySelector('#tidny_trump_card button.update-type-product').dataset.remove_id = JSON.stringify(removeData);
+	document.querySelector('#card_setting button.update-type-product').dataset.remove_id = JSON.stringify(removeData);
 	
-	console.log(document.querySelector('#tidny_trump_card button.update-type-product').dataset.remove_id);
+	console.log(document.querySelector('#card_setting button.update-type-product').dataset.remove_id);
 	
   });
 
 
 
-  jQuery(document).on('click', '#tidny_trump_card button.update-type-product', function(e) {
+  jQuery(document).on('click', '#card_setting button.update-type-product', function(e) {
 	e.preventDefault();
 	console.log(e.target.dataset.remove_id);
 	var remove_data_id = JSON.parse(e.target.dataset.remove_id);
@@ -448,7 +448,7 @@ data_product_type.forEach((element)=>{
 var data_pass={
 	action:'add_update_product_type_and_card_type',
 	remove_id:remove_data_id,
-	product_id:document.querySelector('#tidny_trump_card').dataset.product_id,
+	product_id:document.querySelector('#card_setting').dataset.product_id,
 	product_type:product_type,
 	map_id:map_id,
 card_type:card_type

@@ -14,7 +14,7 @@ $qr = $_GET['qr'];
         'date_time_stamp'=> $now->format('Y-m-d H:i:s'),
         'qr_code'=>$qr ,
         'card_type'=>'none',
-        'tidny_trump_card'=> $now->format('Y-m-d H:i:s'),
+        'card_setting_time'=> $now->format('Y-m-d H:i:s'),
      ));
 // }else{
 //     echo 'already in log';
