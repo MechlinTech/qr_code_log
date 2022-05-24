@@ -38,28 +38,48 @@ public function add_update_product_type_and_card_type(){
 	$product_type = $_POST['product_type'];
     $card_type = $_POST['card_type'];
     $product_id =$_POST['product_id'];
+    $map_id  =$_POST['map_id'];
 	$table_name =$wpdb->prefix.'product_type_and_card_type';
-    $sql_card = "SELECT * FROM `$table_card`;";
+    $sql_card = "SELECT * FROM `$table_name`;";
+    $remove_map_id = $_POST['remove_id'];
+ 
 
-    wp_send_json_success( array('data'=>$product_type) );
+    foreach($remove_map_id as $item){
+        $wpdb->delete( $table_name, array( 'id' => $item ) );
+    }
+  
+   
  if (count($product_type)==count($card_type)){
      for ($i=0;$i<count($card_type);$i++) {
-     $reData =    $wpdb->get_rows("select * from table_name where product_id=$product_id AND card_id=$card_type[$i] AND product_id=$product_type[$i]");
+         
+        if($card_type[$i]!="NULL" && $product_type[$i] !="NULL"){
+        
+     $reData =$wpdb->get_row("SELECT * FROM `$table_name` WHERE `product_id`=$product_id AND `card_type`=$card_type[$i] AND `product_type`=$product_type[$i];");
+
+    
        if(!isset($reData)){
-            //     $wpdb->insert( 
-            //         $table_name, array('product_type'=>1,
-            //     'card_type'=> 1,
-            //     'product_id'=>1,
-            //     'createdate'=> date_create()->format('Y-m-d H:i:s'),
-            //     'updatedate'=> date_create()->format('Y-m-d H:i:s')
-            //     )
-            // );
+       
+       if($map_id[$i]=="NULL"){
+           $wpdb->insert( 
+                    $table_name, array(
+                'product_type'=>$product_type[$i],
+                'card_type'=> $card_type[$i],
+                'product_id'=>$product_id,
+                'createdate'=> date_create()->format('Y-m-d H:i:s'),
+                'updatedate'=> date_create()->format('Y-m-d H:i:s')
+                )
+            );
+       }   
+       }else {
+        $dbData = array('product_type'=>$product_type[$i] , 'card_type'=>$card_type[$i],'updatedate'=>date_create()->format('Y-m-d H:i:s'));
+        $data = $wpdb->update($table_name , $dbData, array('id' => $map_id[$i]));
        }
      }
 
  }
 
-  
+ wp_send_json_success( array('data'=>'$reDatadsfsdf') );
+ }
 
 
     wp_send_json_success( array('data'=>$data) );
@@ -142,6 +162,8 @@ public function add_tidny_card_product_data_fields() {
             'value'       => get_post_meta( get_the_ID(), 'tidny_qr_code', true ),
 			'desc_tip'    	=> false,
 		) );
+        $product_id =get_the_ID();
+        $table_name =$wpdb->prefix.'product_type_and_card_type';
 
         $table_product =$wpdb->prefix.'product_type';
         $sql_product = "SELECT * FROM `$table_product`;";
@@ -156,7 +178,14 @@ public function add_tidny_card_product_data_fields() {
 <div class="card_list">
 <div class="type_records_dynamic">
 <!-- left over element of array and loop this -->
-<!-- <div class="remove">
+
+<?php  $reData =    $wpdb->get_results("SELECT * FROM `$table_name` WHERE `product_id`=$product_id;");
+
+foreach($reData as $key=>$map_data){
+
+
+?>
+<div class="remove" data-map_id="<?php echo $map_data->id; ?>">
        <div>
            <select class="product_type_relation" name="product_type[]">
       <option value="NULL">
@@ -164,7 +193,12 @@ public function add_tidny_card_product_data_fields() {
       </option>
       <?php
       foreach($results_product as $key=>$item){
-          echo '<option value="'.$item->id.'" >'.$item->product_type.'</option>';
+      if($map_data->product_type==$item->id){
+        echo '<option value="'.$item->id.'" selected>'.$item->product_type.'</option>';
+      }else{
+            echo '<option value="'.$item->id.'" >'.$item->product_type.'</option>';
+      }
+        
       }
       ?>
   </select>
@@ -176,16 +210,30 @@ public function add_tidny_card_product_data_fields() {
       </option>
       <?php
       foreach($results_card as $key=>$item){
-        
-          echo '<option value="'.$item->id.'" >'.$item->card_type.'</option>';
+        if($map_data->card_type==$item->id){
+            echo '<option value="'.$item->id.'" selected>'.$item->card_type.'</option>';
+          }else{
+            echo '<option value="'.$item->id.'" >'.$item->card_type.'</option>';
+          }
+         
       }
       ?>
   </select> 
  </div>
   
     
-  <a href="#" class="remove-field btn-remove-type button button-primary">Remove </a> <a class="extra-fields-type button button-primary" href="#">Add </a></div> -->
+  <a href="#" class="remove-field btn-remove-type button button-primary">Remove </a> 
+
 </div>
+
+
+<?php  } ?>
+
+</div>
+
+
+
+
   <div class="type_records">
       <!-- array first element -->
       <div>
@@ -219,7 +267,7 @@ public function add_tidny_card_product_data_fields() {
   
 
 </div>
-<button class="button button-primary update-type-product" >Update</button>
+<button class="button button-primary update-type-product" data-remove_id="[]">Update</button>
 
 </form>
 	</div>
