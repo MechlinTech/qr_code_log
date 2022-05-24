@@ -188,7 +188,7 @@ public function admin_menu_for_qr_code() {
       <th>QR Code</th>
       <th>Product Type</th>
       <th>Card Type</th>
-      <th>User ID</th>
+      <th>User Upline</th>
         <th>User Owner</th>
       <th>Create Date</th>
       <th>Update Date</th>

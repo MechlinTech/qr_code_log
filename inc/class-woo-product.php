@@ -18,7 +18,7 @@ class WooProductData{
         add_action( 'woocommerce_thankyou', array($this,'add_data_for_qr_code'), 10, 1);
        // add_action( 'woocommerce_product_options_general_product_data', array($this,'misha_option_group') );
         add_filter( 'woocommerce_product_data_tabs',  array($this,'woo_new_product_tab') );
-        add_action( 'woocommerce_product_data_panels',  array($this,'add_tidny_card_product_data_fields') );
+        add_action( 'woocommerce_product_data_panels',  array($this,'add_mlm_card_product_data_fields') );
         add_action( 'woocommerce_process_product_meta', array($this,'qr_code_save_fields'), 10, 2 );
         $this->woo_product_type_and_card_type();
 
@@ -137,9 +137,9 @@ public function woo_new_product_tab( $product_data_tabs) {
 	
 	// Adds the new tab
 	
-	$product_data_tabs['tidny_card'] = array(
-		'label' => __( 'Card Settings', 'tidny_trump_card' ),
-		'target' => 'tidny_trump_card',
+	$product_data_tabs['mlm_card'] = array(
+		'label' => __( 'Card Settings', 'mlm_card' ),
+		'target' => 'mlm_card',
         
 	);
 	return $product_data_tabs;
@@ -147,19 +147,19 @@ public function woo_new_product_tab( $product_data_tabs) {
 }
 
 
-public function add_tidny_card_product_data_fields() {
+public function add_mlm_card_product_data_fields() {
 	global $woocommerce, $post,$wpdb;
 	?>
 	<!-- id below must match target registered in above add_my_custom_product_data_tab function -->
-	<div id="tidny_trump_card" class="panel woocommerce_options_panel" data-product_id="<?php echo get_the_ID(); ?>">
+	<div id="mlm_card" class="panel woocommerce_options_panel" data-product_id="<?php echo get_the_ID(); ?>">
 		<?php
 		woocommerce_wp_checkbox( array( 
-			'id'            => 'tidny_qr_code', 
+			'id'            => 'mlm_qr_code', 
 			'wrapper_class' => 'show_if_simple', 
-			'label'         => __( 'Enable', 'tidny_trump_card' ),
-			'description'   => __( 'Qr Code on Product', 'tidny_trump_card' ),
+			'label'         => __( 'Enable', 'mlm_card' ),
+			'description'   => __( 'Qr Code on Product', 'mlm_card' ),
 			'default'  		=> '0',
-            'value'       => get_post_meta( get_the_ID(), 'tidny_qr_code', true ),
+            'value'       => get_post_meta( get_the_ID(), 'mlm_qr_code', true ),
 			'desc_tip'    	=> false,
 		) );
         $product_id =get_the_ID();
@@ -206,7 +206,7 @@ foreach($reData as $key=>$map_data){
  <div>
     <select class="card_type_relation"  name="card_type[]">
       <option value="NULL">
-          please select card tpe
+          please select card type
       </option>
       <?php
       foreach($results_card as $key=>$item){
@@ -251,7 +251,7 @@ foreach($reData as $key=>$map_data){
  <div>
     <select class="card_type_relation"  name="card_type[]">
       <option value="NULL">
-          please select card tpe
+          please select card type
       </option>
       <?php
       foreach($results_card as $key=>$item){
@@ -277,10 +277,10 @@ foreach($reData as $key=>$map_data){
 
 function qr_code_save_fields( $id, $post ){
  
-	if(get_post_meta( get_the_ID(), 'tidny_qr_code', true )){
-        update_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
+	if(get_post_meta( get_the_ID(), 'mlm_qr_code', true )){
+        update_post_meta( $id, 'mlm_qr_code', $_POST['mlm_qr_code'] );
     }else{
-        add_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
+        add_post_meta( $id, 'mlm_qr_code', $_POST['mlm_qr_code'] );
     }
 		
 	
@@ -315,7 +315,7 @@ function qr_code_save_fields( $id, $post ){
             // Get the product object
             $product = wc_get_product( $product_id );
             
-           $qr_code = get_post_meta( $product_id , 'tidny_qr_code', true ) ;
+           $qr_code = get_post_meta( $product_id , 'mlm_qr_code', true ) ;
            if($qr_code=="yes"){
                if(empty(wc_get_order_item_meta( $item_id, 'qr_code_data', true ))){
                $data[$item_id] = wc_add_order_item_meta($item_id,'qr_code_data',$time);

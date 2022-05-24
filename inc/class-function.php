@@ -130,7 +130,7 @@ class QRCode
             date_time_stamp DATETIME NOT NULL,
             qr_code VARCHAR(159) NOT NULL,
             card_type VARCHAR(159) NOT NULL,
-            tidny_trump_card DATETIME NOT NULL,
+            mlm_card DATETIME NOT NULL,
             PRIMARY KEY (id)
             ) $charset_collate;";
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
