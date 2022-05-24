@@ -105,6 +105,7 @@ public function add_update_product_type_and_card_type(){
 			`product_type` BIGINT(20)  NULL , 
             `card_type` BIGINT(20)  NULL ,	
             `product_id` BIGINT(20) UNSIGNED NULL DEFAULT NULL ,
+            `quantity` BIGINT(20)  NULL DEFAULT 1 ,
 			`createdate` TIMESTAMP NULL DEFAULT NULL , 
 			`updatedate` TIMESTAMP NULL DEFAULT NULL,
             
@@ -137,9 +138,9 @@ public function woo_new_product_tab( $product_data_tabs) {
 	
 	// Adds the new tab
 	
-	$product_data_tabs['tidny_card'] = array(
-		'label' => __( 'Card Settings', 'tidny_trump_card' ),
-		'target' => 'tidny_trump_card',
+	$product_data_tabs['card_setting'] = array(
+		'label' => __( 'Card Settings', 'card_setting' ),
+		'target' => 'card_setting',
         
 	);
 	return $product_data_tabs;
@@ -151,15 +152,15 @@ public function add_tidny_card_product_data_fields() {
 	global $woocommerce, $post,$wpdb;
 	?>
 	<!-- id below must match target registered in above add_my_custom_product_data_tab function -->
-	<div id="tidny_trump_card" class="panel woocommerce_options_panel" data-product_id="<?php echo get_the_ID(); ?>">
+	<div id="card_setting" class="panel woocommerce_options_panel" data-product_id="<?php echo get_the_ID(); ?>">
 		<?php
 		woocommerce_wp_checkbox( array( 
 			'id'            => 'tidny_qr_code', 
 			'wrapper_class' => 'show_if_simple', 
-			'label'         => __( 'Enable', 'tidny_trump_card' ),
-			'description'   => __( 'Qr Code on Product', 'tidny_trump_card' ),
+			'label'         => __( 'Enable', 'card_setting' ),
+			'description'   => __( 'Qr Code on Product', 'card_setting' ),
 			'default'  		=> '0',
-            'value'       => get_post_meta( get_the_ID(), 'tidny_qr_code', true ),
+            'value'       => get_post_meta( get_the_ID(), 'card_setting', true ),
 			'desc_tip'    	=> false,
 		) );
         $product_id =get_the_ID();
@@ -206,7 +207,7 @@ foreach($reData as $key=>$map_data){
  <div>
     <select class="card_type_relation"  name="card_type[]">
       <option value="NULL">
-          please select card tpe
+          please select card type
       </option>
       <?php
       foreach($results_card as $key=>$item){
@@ -220,7 +221,9 @@ foreach($reData as $key=>$map_data){
       ?>
   </select> 
  </div>
-  
+ <div>
+     <input class="quantity_relation"  name="product_quantity[]" value="<?php echo $map_data->quantity;  ?>" />
+ </div>
     
   <a href="#" class="remove-field btn-remove-type button button-primary">Remove </a> 
 
@@ -251,7 +254,7 @@ foreach($reData as $key=>$map_data){
  <div>
     <select class="card_type_relation"  name="card_type[]">
       <option value="NULL">
-          please select card tpe
+          please select card type
       </option>
       <?php
       foreach($results_card as $key=>$item){
@@ -259,6 +262,9 @@ foreach($reData as $key=>$map_data){
       }
       ?>
   </select> 
+ </div>
+ <div>
+     <input class="quantity_relation"  name="product_quantity[]" value="" />
  </div>
   
     <a class="extra-fields-type button button-primary" href="#">Add </a>
@@ -277,10 +283,10 @@ foreach($reData as $key=>$map_data){
 
 function qr_code_save_fields( $id, $post ){
  
-	if(get_post_meta( get_the_ID(), 'tidny_qr_code', true )){
-        update_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
+	if(get_post_meta( get_the_ID(), 'card_setting', true )){
+        update_post_meta( $id, 'card_setting', $_POST['card_setting'] );
     }else{
-        add_post_meta( $id, 'tidny_qr_code', $_POST['tidny_qr_code'] );
+        add_post_meta( $id, 'card_setting', $_POST['card_setting'] );
     }
 		
 	
@@ -319,23 +325,10 @@ function qr_code_save_fields( $id, $post ){
            if($qr_code=="yes"){
                if(empty(wc_get_order_item_meta( $item_id, 'qr_code_data', true ))){
                $data[$item_id] = wc_add_order_item_meta($item_id,'qr_code_data',$time);
-               echo plugin_dir_path(__FILE__);
+            //    echo plugin_dir_path(__FILE__);
            
-               $dataToBeStored = array(
-                'userid'=> $user_id  ,
-				'qr_code'=>$time , 
-				'fname'=>$data['fname']  , 
-				'lname'=>$data['lname'] , 
-				'address'=>$data['address'] , 
-				'city'=>$data['city'], 
-				'state'=>$data['state'] , 
-				'zip'=>$data['zip'] , 
-				'order_id'=>$data['order_id']  , 
-                'item_id'=>$data['item_id']  , 
-				'createdate'=>$data['createdate']  , 
-				'updatedate'=>$data['updatedate']          
-               );
-                    QRCodeDatas::create_qr_data($dataToBeStored);
+               
+                    
                }else{
                 $data[$item_id] = wc_get_order_item_meta($item_id,'qr_code_data',true); 
                }
