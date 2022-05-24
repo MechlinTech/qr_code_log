@@ -1,9 +1,4 @@
-
-
 <?php
-
-
-
 class WooProductData{
     static function init()
     {
@@ -27,11 +22,6 @@ class WooProductData{
         
     }
 
-  
- /**
- * Add a custom product data tab
- */
-
 public function add_update_product_type_and_card_type(){
     global $wpdb;
     $charset_collate = $wpdb->get_charset_collate();
@@ -41,22 +31,17 @@ public function add_update_product_type_and_card_type(){
     $map_id  =$_POST['map_id'];
 	$table_name =$wpdb->prefix.'product_type_and_card_type';
     $sql_card = "SELECT * FROM `$table_name`;";
-    $remove_map_id = $_POST['remove_id'];
- 
+    $remove_map_id = $_POST['remove_id']; 
 
     foreach($remove_map_id as $item){
         $wpdb->delete( $table_name, array( 'id' => $item ) );
-    }
-  
-   
+    }   
  if (count($product_type)==count($card_type)){
      for ($i=0;$i<count($card_type);$i++) {
          
         if($card_type[$i]!="NULL" && $product_type[$i] !="NULL"){
         
-     $reData =$wpdb->get_row("SELECT * FROM `$table_name` WHERE `product_id`=$product_id AND `card_type`=$card_type[$i] AND `product_type`=$product_type[$i];");
-
-    
+     $reData =$wpdb->get_row("SELECT * FROM `$table_name` WHERE `product_id`=$product_id AND `card_type`=$card_type[$i] AND `product_type`=$product_type[$i];");   
        if(!isset($reData)){
        
        if($map_id[$i]=="NULL"){
@@ -78,11 +63,9 @@ public function add_update_product_type_and_card_type(){
 
  }
 
- wp_send_json_success( array('data'=>'$reDatadsfsdf') );
+             wp_send_json_success( array('data'=>'$reDatadsfsdf') );
  }
-
-
-    wp_send_json_success( array('data'=>$data) );
+             wp_send_json_success( array('data'=>$data) );
 
 
 }
@@ -109,7 +92,7 @@ public function add_update_product_type_and_card_type(){
 			`createdate` TIMESTAMP NULL DEFAULT NULL , 
 			`updatedate` TIMESTAMP NULL DEFAULT NULL,
             
-             KEY `" . $table_name . "_product_type_foreign` (`product_type`),
+                KEY `" . $table_name . "_product_type_foreign` (`product_type`),
 				KEY `" . $table_name . "_card_type_foreign` (`card_type`),
 				KEY `" . $table_name . "_product_id_foreign` (`product_id`),
 
@@ -233,10 +216,6 @@ foreach($reData as $key=>$map_data){
 <?php  } ?>
 
 </div>
-
-
-
-
   <div class="type_records">
       <!-- array first element -->
       <div>
@@ -266,12 +245,8 @@ foreach($reData as $key=>$map_data){
  <div>
      <input class="quantity_relation"  name="product_quantity[]" value="" />
  </div>
-  
-    <a class="extra-fields-type button button-primary" href="#">Add </a>
+      <a class="extra-fields-type button button-primary" href="#">Add </a>
   </div>
-
-  
-
 </div>
 <button class="button button-primary update-type-product" data-remove_id="[]">Update</button>
 
@@ -281,16 +256,12 @@ foreach($reData as $key=>$map_data){
 
 }
 
-function qr_code_save_fields( $id, $post ){
- 
+function qr_code_save_fields( $id, $post ){ 
 	if(get_post_meta( get_the_ID(), 'card_setting', true )){
         update_post_meta( $id, 'card_setting', $_POST['card_setting'] );
     }else{
         add_post_meta( $id, 'card_setting', $_POST['card_setting'] );
     }
-		
-	
- 
 }
 
 
@@ -325,25 +296,15 @@ function qr_code_save_fields( $id, $post ){
            if($qr_code=="yes"){
                if(empty(wc_get_order_item_meta( $item_id, 'qr_code_data', true ))){
                $data[$item_id] = wc_add_order_item_meta($item_id,'qr_code_data',$time);
-            //    echo plugin_dir_path(__FILE__);
-           
-               
-                    
+            //    echo plugin_dir_path(__FILE__);               
                }else{
                 $data[$item_id] = wc_get_order_item_meta($item_id,'qr_code_data',true); 
                }
              
            }
         }
-
-
-
-
-    
         // Ouptput some data
         echo json_encode( $data );
          echo '<p>Order ID: '. $order_id . ' — Order Status: ' . $order->get_status() . ' — Order is paid: ' . $paid . '</p>';
-
-         
     }
 }
